@@ -8,6 +8,11 @@
 
 #import "CustomPresentAnimationCotroller.h"
 
+@interface CustomPresentAnimationCotroller ()
+
+@property (nonatomic,strong) UIViewController *toVC;
+@end
+
 @implementation CustomPresentAnimationCotroller
 
 //转场动画时间
@@ -18,15 +23,17 @@
 - (void)animateTransition:(id<UIViewControllerContextTransitioning>)transitionContext {
     
     UIViewController *fromVC = [transitionContext viewControllerForKey:UITransitionContextFromViewControllerKey];
-    UIViewController *toVC = [transitionContext viewControllerForKey:UITransitionContextToViewControllerKey];
-    UIView *toView = toVC.view;
+    _toVC = [transitionContext viewControllerForKey:UITransitionContextToViewControllerKey];
+    UIView *toView = _toVC.view;
     UIView *fromView = fromVC.view;
     
     if(self.isDismissed){
-        [self RunDismissAnimation:transitionContext fromVC:fromVC toVC:toVC fromView:fromView toView:toView];
+        [self RunDismissAnimation:transitionContext fromVC:fromVC toVC:_toVC fromView:fromView toView:toView];
     } else {
-        [self RunPresentAnimation:transitionContext fromVC:fromVC toVC:toVC fromView:fromView toView:toView];
+        [self RunPresentAnimation:transitionContext fromVC:fromVC toVC:_toVC fromView:fromView toView:toView];
     }
+    
+    [_toVC beginAppearanceTransition:YES animated:YES];
 }
 
 #pragma mark - presentAnimation
@@ -86,6 +93,7 @@
     } completion:^(BOOL finished) {
         //过渡动画结束
         [transitionContext completeTransition:![transitionContext transitionWasCancelled]];
+
     }];
  
     
@@ -129,5 +137,13 @@
 
 }
 
+-(void)animationEnded:(BOOL)transitionCompleted{
+    if (!transitionCompleted) {
+        _toVC.view.transform = CGAffineTransformIdentity;
+    }
+    else{
+        [_toVC endAppearanceTransition];
+    }
+}
 
 @end
