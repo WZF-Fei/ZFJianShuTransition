@@ -27,13 +27,15 @@
     UIView *toView = _toVC.view;
     UIView *fromView = fromVC.view;
     
+    [_toVC beginAppearanceTransition:YES animated:YES];
+    
     if(self.isDismissed){
         [self RunDismissAnimation:transitionContext fromVC:fromVC toVC:_toVC fromView:fromView toView:toView];
     } else {
         [self RunPresentAnimation:transitionContext fromVC:fromVC toVC:_toVC fromView:fromView toView:toView];
     }
     
-    [_toVC beginAppearanceTransition:YES animated:YES];
+    [fromVC beginAppearanceTransition:NO animated:YES];
 }
 
 #pragma mark - presentAnimation
@@ -142,7 +144,7 @@
         _toVC.view.transform = CGAffineTransformIdentity;
     }
     else{
-        [_toVC endAppearanceTransition];
+//        [_toVC endAppearanceTransition];
     }
 }
 
